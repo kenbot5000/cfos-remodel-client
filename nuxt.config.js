@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - cfos-remodel-client',
-    title: 'cfos-remodel-client',
+    titleTemplate: '%s - CFOS',
+    title: 'Cafeteria Food Ordering System',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
