@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card>Under construction</v-card>
+    <v-card>Orders</v-card>
   </v-container>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   layout: 'Base',
   created () {
-    this.$store.commit('setNavbarText', 'Users')
+    this.$store.commit('setNavbarText', 'Orders')
   }
 }
 </script>

@@ -1,12 +1,30 @@
 <template>
   <v-container class="px-6">
+    <v-snackbar v-model="snackbar" timeout="2000">
+      {{ snackbarMessage }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-row>
       <v-col>
         <v-card min-height="475">
           <v-card-title class="text-h4">
             Orders
+            <v-spacer />
+            <v-btn color="info" @click="refreshOrders">
+              Refresh
+            </v-btn>
           </v-card-title>
-          <v-simple-table>
+          <v-simple-table class="mx-4">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -16,7 +34,7 @@
                   <th class="text-left">
                     Name
                   </th>
-                  <th class="text-left">
+                  <th class="text-center">
                     Items
                   </th>
                 </tr>
@@ -25,7 +43,7 @@
                 <tr v-for="order in activeOrders" :key="order._id">
                   <td>{{ order.student.student_no }}</td>
                   <td>{{ order.student.lname }}, {{ order.student.fname }}</td>
-                  <td>
+                  <td class="text-center">
                     <v-btn color="success" @click="viewOrder(order)">
                       View Order
                     </v-btn>
@@ -34,7 +52,6 @@
               </tbody>
             </template>
           </v-simple-table>
-          <v-divider />
         </v-card>
       </v-col>
     </v-row>
@@ -46,7 +63,17 @@
             Today's Menu
           </v-card-title>
           <v-divider />
-          <v-data-table :headers="menuHeaders" :items="activeMenu" :items-per-page="5" class="mx-4" />
+          <!-- TODAY'S ORDERS -->
+          <v-data-table :headers="menuHeaders" :items="activeMenu" :items-per-page="5" class="mx-4">
+            <template v-slot:[`item.stock`]="{item}">
+              <td v-if="item.stock === 0" class="error--text">
+                OUT OF STOCK
+              </td>
+              <td v-if="item.stock !== 0">
+                {{ item.stock }}
+              </td>
+            </template>
+          </v-data-table>
         </v-card>
       </v-col>
       <v-col>
@@ -77,6 +104,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <!-- ORDER DIALOG TABLE -->
           <v-simple-table class="my-2" height="200" fixed-header>
             <template v-slot:default>
               <thead>
@@ -105,7 +133,7 @@
           </v-list-item>
         </v-list>
         <v-card-actions>
-          <v-btn color="success">
+          <v-btn color="success" @click="completeOrder">
             Complete Order
           </v-btn>
           <v-btn color="error" @click="showOrderDialog = false">
@@ -138,12 +166,18 @@ export default {
         {
           text: 'Price',
           value: 'price'
+        },
+        {
+          text: 'Stock',
+          value: 'stock'
         }
       ],
       activeOrders: [],
       // Order dialog
       showOrderDialog: false,
-      currentlyViewingOrder: Object
+      currentlyViewingOrder: Object,
+      snackbar: false,
+      snackbarMessage: ''
     }
   },
   created () {
@@ -167,13 +201,30 @@ export default {
 
     // Get all orders. TODO: Make order filter out to active
     axios.get('/api/order').then((res) => {
-      this.activeOrders = res.data.res
+      this.activeOrders = res.data.res.filter(item => item.active === true)
     })
   },
   methods: {
     viewOrder (order) {
       this.showOrderDialog = true
       this.currentlyViewingOrder = order
+    },
+    async completeOrder () {
+      const res = await axios.patch(`/api/order/${this.currentlyViewingOrder._id}`)
+      if (res.status === 204) {
+        this.snackbar = true
+        this.snackbarMessage = 'Order moved to archive!'
+        this.refreshOrders(false)
+      }
+    },
+    refreshOrders (showDefaultMessage = true) {
+      axios.get('/api/order').then((res) => {
+        this.activeOrders = res.data.res.filter(item => item.active === true)
+        if (showDefaultMessage) {
+          this.snackbarMessage = 'Data refreshed!'
+          this.snackbar = true
+        }
+      })
     }
   },
   head () {

@@ -7,7 +7,7 @@
     <v-list>
       <v-list-item v-for="user in users" :key="user.username">
         <v-list-item-content>
-          <v-list-item-title class="text-h5" v-text="user.username" />
+          <v-list-item-title class="text-h6" v-text="user.username" />
         </v-list-item-content>
         <v-list-item-action>
           <v-btn color="warning">
