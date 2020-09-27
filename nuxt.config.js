@@ -37,15 +37,25 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    'cookie-universal-nuxt'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    proxy: true
+  },
+
+  proxy: {
+    '/api/': { target: 'http://localhost:5000', pathRewrite: { '^/api/': '' } }
+  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    icons: {
+      iconFont: 'mdiSvg'
+    },
     theme: {
       themes: {
         light: {
