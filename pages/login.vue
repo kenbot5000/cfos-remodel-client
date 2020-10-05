@@ -60,6 +60,7 @@ export default {
             maxAge: 60 * 60 * 16
           })
 
+          this.$store.commit('setNavbarText', 'Dashboard')
           this.$router.push('/')
         } else {
           this.error = 'Incorrect password.'

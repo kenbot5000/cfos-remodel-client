@@ -77,6 +77,11 @@ export default {
           icon: 'mdi-tray-full',
           title: 'Orders',
           message: 'Orders'
+        },
+        {
+          link: '/kiosk',
+          icon: 'mdi-basket',
+          title: 'Go to Kiosk'
         }
       ],
       username: String
