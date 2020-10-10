@@ -1,19 +1,6 @@
 <template>
   <v-container class="px-6">
-    <v-snackbar v-model="snackbar" timeout="2000">
-      {{ snackbarMessage }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
+    <Snackbar ref="snackbar" />
     <v-row>
       <v-col>
         <v-card min-height="475">
@@ -148,10 +135,11 @@
 <script>
 import axios from 'axios'
 import UserCard from '../components/UserCard'
+import Snackbar from '../components/Snackbar'
 
 export default {
   layout: 'Base',
-  components: { UserCard },
+  components: { UserCard, Snackbar },
   data () {
     return {
       users: [],
@@ -175,9 +163,7 @@ export default {
       activeOrders: [],
       // Order dialog
       showOrderDialog: false,
-      currentlyViewingOrder: Object,
-      snackbar: false,
-      snackbarMessage: ''
+      currentlyViewingOrder: Object
     }
   },
   created () {
@@ -212,18 +198,14 @@ export default {
     async completeOrder () {
       const res = await axios.patch(`/api/order/${this.currentlyViewingOrder._id}`)
       if (res.status === 204) {
-        this.snackbar = true
-        this.snackbarMessage = 'Order moved to archive!'
+        this.$refs.snackbar.sendMessage('Order moved to archive!')
         this.refreshOrders(false)
       }
     },
     refreshOrders (showDefaultMessage = true) {
       axios.get('/api/order').then((res) => {
         this.activeOrders = res.data.res.filter(item => item.active === true)
-        if (showDefaultMessage) {
-          this.snackbarMessage = 'Data refreshed!'
-          this.snackbar = true
-        }
+        if (showDefaultMessage) { this.$refs.snackbar.sendMessage('Data refreshed!') }
       })
     }
   },

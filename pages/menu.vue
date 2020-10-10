@@ -71,21 +71,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
     <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" timeout="2000">
-      {{ snackbarMessage }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <Snackbar ref="snackbar" />
+
     <!-- Manage Menu Card -->
     <v-row>
       <v-col>
@@ -201,9 +189,13 @@
 
 <script>
 import axios from 'axios'
+import Snackbar from '../components/Snackbar'
 
 export default {
   layout: 'Base',
+  components: {
+    Snackbar
+  },
   data () {
     return {
       menu: [],
@@ -267,8 +259,7 @@ export default {
       }
       const res = await axios.post('/api/menu', newItem)
       if (res.status === 201) {
-        this.snackbarMessage = 'Item sucessfully created!'
-        this.snackbar = true
+        this.$refs.snackbar.sendMessage('Item successfully created!')
         this.refresh(false)
       }
     },
@@ -276,8 +267,7 @@ export default {
       this.editForm.active = (this.editForm.active === 'true')
       const res = await axios.patch(`/api/menu/search?id=${this.editForm.id}`, this.editForm)
       if (res.status === 200) {
-        this.snackbarMessage = 'Item edited successfully.'
-        this.snackbar = true
+        this.$refs.snackbar.sendMessage('Item edited successfully.')
         this.editForm = {
           name: '',
           price: 0,
@@ -290,16 +280,14 @@ export default {
       const menu = await axios.get('/api/menu')
       this.menu = menu.data.res
       if (showDefaultMessage) {
-        this.snackbarMessage = 'Data refreshed!'
-        this.snackbar = true
+        this.$refs.snackbar.sendMessage('Data has been refreshed.')
       }
     },
     async setActiveStatus (item, active) {
       item.active = active
       const res = await axios.patch(`/api/menu/search?id=${item._id}`, item)
       if (res.status === 200) {
-        this.snackbarMessage = 'Item moved successfully!'
-        this.snackbar = true
+        this.$refs.snackbar.sendMessage('Item moved successfully.')
       }
       this.refresh(false)
     },
@@ -317,8 +305,7 @@ export default {
     async deleteItem () {
       const res = await axios.delete(`/api/menu/search?id=${this.itemToDelete}`)
       if (res.status === 204) {
-        this.snackbarMessage = 'Item deleted successfully.'
-        this.snackbar = true
+        this.$refs.snackbar.sendMessage('Item deleted successfully')
         this.confirmDelete = false
         this.refresh(false)
       }
