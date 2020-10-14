@@ -74,6 +74,13 @@
     <!-- Snackbar -->
     <Snackbar ref="snackbar" />
 
+    <!-- Stock Management Component -->
+    <v-row>
+      <v-col>
+        <StockManager />
+      </v-col>
+    </v-row>
+
     <!-- Manage Menu Card -->
     <v-row>
       <v-col>
@@ -190,11 +197,13 @@
 <script>
 import axios from 'axios'
 import Snackbar from '../components/Snackbar'
+import StockManager from '../components/StockManager'
 
 export default {
   layout: 'Base',
   components: {
-    Snackbar
+    Snackbar,
+    StockManager
   },
   data () {
     return {
