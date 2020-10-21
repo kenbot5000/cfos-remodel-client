@@ -87,12 +87,14 @@
                     <thead>
                       <tr>
                         <th>Item Name</th>
+                        <th>Amount</th>
                         <th>Price</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="item in order.items" :key="item._id">
                         <td>{{ item.name }}</td>
+                        <td>{{ item.count }}</td>
                         <td>{{ item.price.toFixed(2) }}</td>
                       </tr>
                     </tbody>
@@ -179,11 +181,14 @@ export default {
       })
     }
   },
-  async created () {
-    const activeMenuItems = await axios.get('/api/menu/')
-    this.menu = activeMenuItems.data.res
+  created () {
+    this.getAllMenuItems()
   },
   methods: {
+    async getAllMenuItems () {
+      const activeMenuItems = await axios.get('/api/menu/')
+      this.menu = activeMenuItems.data.res
+    },
     async searchStudent () {
       try {
         const res = await axios.get(`/api/student/${this.student_no}`)

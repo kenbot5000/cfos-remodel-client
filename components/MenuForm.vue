@@ -196,7 +196,7 @@ export default {
       const res = await axios.delete(`/api/menu/search?id=${this.itemToDelete}`)
       if (res.status === 204) {
         this.localRefresh()
-        this.$emit('refresh', 'Item successfully delted.')
+        this.$emit('refresh', 'Item successfully deleted.')
       }
     }
   }
