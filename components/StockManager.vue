@@ -5,7 +5,22 @@
         All Items
       </h4>
     </v-card-title>
-    <v-data-table :headers="headers" :items="menuItems" />
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      single-line
+      hide-details
+      class="mx-2"
+    />
+    <v-data-table :headers="headers" :items="menuItems" :search="search">
+      <template v-slot:item.stock="{ item }">
+        <v-chip v-if="item.stock == 0" color="red" class="white--text">
+          OUT OF STOCK
+        </v-chip>
+        <span v-else>{{ item.stock }}</span>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
@@ -24,12 +39,21 @@ export default {
         { text: 'Active?', value: 'active' },
         { text: 'Stock', value: 'stock' }
       ],
-      menuItems: []
+      menuItems: [],
+      search: ''
     }
   },
-  async created () {
-    const menu = await axios.get('/api/menu')
-    this.menuItems = menu.data.res
+  created () {
+    this.getAllItems()
+  },
+  methods: {
+    async getAllItems () {
+      const menu = await axios.get('/api/menu')
+      menu.data.res.filter(function (item) {
+        item.active = item.active ? 'Yes' : 'No'
+      })
+      this.menuItems = menu.data.res
+    }
   }
 }
 </script>
