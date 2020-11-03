@@ -10,7 +10,14 @@
           <v-card-subtitle>Start here:</v-card-subtitle>
           <v-form class="mx-4">
             <v-text-field v-model="student_no" label="Student Number" outlined @input="searchStudent" />
-            <v-text-field v-model="name" label="Name" outlined :disabled="!nameFound" :readonly="nameFound" />
+            <v-text-field
+              v-model="name"
+              label="Name"
+              outlined
+              :disabled="!nameFound"
+              :readonly="nameFound"
+              :loading="searchLoad"
+            />
           </v-form>
           <v-card-actions>
             <v-btn color="success" x-large :disabled="!nameFound" @click="begin">
@@ -189,18 +196,26 @@ export default {
       const activeMenuItems = await axios.get('/api/menu/')
       this.menu = activeMenuItems.data.res
     },
-    async searchStudent () {
+    searchStudent () {
       try {
-        const res = await axios.get(`/api/student/${this.student_no}`)
-        if (res.status === 200) {
-          this.name = `${res.data.res.lname}, ${res.data.res.fname}`
-          this.nameFound = true
-        } else {
-          this.name = ''
-          this.nameFound = false
-        }
+        this.searchLoad = true
+        this.name = ''
+        setTimeout(async () => {
+          const res = await axios.get(`/api/student/${this.student_no}`)
+          if (res.status === 200) {
+            this.name = `${res.data.res.lname}, ${res.data.res.fname}`
+            this.nameFound = true
+            this.searchLoad = false
+          } else {
+            this.name = ''
+            this.nameFound = false
+            this.searchLoad = false
+          }
+        }, 2500)
       } catch (err) {
         this.name = ''
+        this.nameFound = false
+        this.searchLoad = false
       }
     },
     async begin () {
@@ -212,7 +227,13 @@ export default {
     },
     async buy (itemname) {
       const res = await axios.post(`/api/order/${this.order._id}`, { name: itemname })
-      if (res.status === 200) { this.refresh() }
+      if (res.status === 200) {
+        const updateStockIndex = this.menu.findIndex((searchItem) => {
+          return searchItem.name === itemname
+        })
+        this.menu[updateStockIndex].stock -= 1
+        this.refresh()
+      }
     },
     async refresh () {
       const res = await axios.get(`/api/order/${this.order._id}`)
@@ -231,6 +252,8 @@ export default {
         this.name = ''
         this.nameFound = false
         this.student_no = 0
+        // Calls socket to update
+        this.$socket.emit('finalize_order', this.order.items)
       }
     }
   }

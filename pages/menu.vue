@@ -56,6 +56,18 @@ export default {
       this.$refs.stockmanager.getAllItems()
       this.$refs.snackbar.sendMessage(text)
     }
+  },
+  sockets: {
+    decrement_stock (items) {
+      items.forEach(async (item) => {
+        // Gets item. Change this to not need an item search
+        const getItem = await axios.get(`/api/menu/search?name=${item.name}`)
+        const itemToEdit = getItem.data.res
+        itemToEdit.stock -= item.count
+        await axios.patch(`/api/menu/search?name=${item.name}`, itemToEdit)
+      })
+      this.refresh('New order arrived. Stock updated')
+    }
   }
 }
 </script>

@@ -4,6 +4,7 @@
       <v-list>
         <v-list-item>
           <v-list-item-content>
+            <img class="logo" src="~/assets/logo.png">
             <v-list-item-title class="text-h6 mb-6 mt-2">
               Cafeteria Food <br> Ordering System
             </v-list-item-title>
@@ -128,4 +129,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.logo {
+  max-height: 170px;
+  max-width: 170px;
+  margin-top: -10px
+}
+</style>

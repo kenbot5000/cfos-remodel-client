@@ -175,7 +175,6 @@ export default {
       this.users = res.data
     })
 
-    // Get all active menu items
     axios.get('/api/menu').then((res) => {
       let results = res.data.res.filter(item => item.active === true)
       results = results.map((item) => {
@@ -185,15 +184,29 @@ export default {
       this.activeMenu = results
     })
 
-    // Get all orders. TODO: Make order filter out to active
-    axios.get('/api/order').then((res) => {
-      this.activeOrders = res.data.res.filter(item => item.active === true)
-    })
+    this.getAllActiveOrders()
   },
   methods: {
     viewOrder (order) {
       this.showOrderDialog = true
       this.currentlyViewingOrder = order
+    },
+    async getAllActiveMenuItems () {
+      // Get all active menu items
+
+      // eslint-disable-next-line prefer-const
+      let res = await axios.get('/api/menu')
+      let results = res.data.res.filter(item => item.active === true)
+      results = results.map((item) => {
+        item.price = item.price.toFixed(2)
+        return item
+      })
+      this.activeMenu = results
+    },
+    getAllActiveOrders () {
+      axios.get('/api/order').then((res) => {
+        this.activeOrders = res.data.res.filter(item => item.active === true)
+      })
     },
     async completeOrder () {
       const res = await axios.patch(`/api/order/${this.currentlyViewingOrder._id}`)
@@ -207,6 +220,20 @@ export default {
         this.activeOrders = res.data.res.filter(item => item.active === true)
         if (showDefaultMessage) { this.$refs.snackbar.sendMessage('Data refreshed!') }
       })
+    }
+  },
+  sockets: {
+    decrement_stock (items) {
+      items.forEach(async (item) => {
+        // Gets item. Change this to not need an item search
+        const getItem = await axios.get(`/api/menu/search?name=${item.name}`)
+        const itemToEdit = getItem.data.res
+        itemToEdit.stock -= item.count
+        await axios.patch(`/api/menu/search?name=${item.name}`, itemToEdit)
+      })
+      this.refreshOrders(false)
+      this.getAllActiveMenuItems()
+      this.$refs.snackbar.sendMessage('New order arrived. Data refreshed')
     }
   },
   head () {

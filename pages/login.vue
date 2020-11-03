@@ -2,7 +2,8 @@
   <v-app>
     <v-main>
       <v-container fluid class="fill-height primary darken-2">
-        <v-card width="500" class="mx-auto pa-5 mt-n10">
+        <v-card width="500" class="mx-auto pa-5 mt-n10 text-center">
+          <img src="~/assets/logo.png" height="200">
           <h4 class="text-h4 text-center mt-3">
             CFOS Login
           </h4>
