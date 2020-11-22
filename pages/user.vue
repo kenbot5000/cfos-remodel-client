@@ -1,11 +1,16 @@
 <template>
   <v-container>
-    <v-card>Under construction</v-card>
+    <UserManager />
   </v-container>
 </template>
 
 <script>
+import UserManager from '../components/UserManager'
+
 export default {
+  components: {
+    UserManager
+  },
   layout: 'Base',
   created () {
     this.$store.commit('setNavbarText', 'Users')

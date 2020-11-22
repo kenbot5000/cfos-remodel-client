@@ -14,7 +14,7 @@
       class="mx-2"
     />
     <v-data-table :headers="headers" :items="menuItems" :search="search">
-      <template v-slot:item.stock="{ item }">
+      <template #[`item.stock`]="{ item }">
         <v-chip v-if="item.stock == 0" color="red" class="white--text">
           OUT OF STOCK
         </v-chip>
@@ -43,7 +43,7 @@ export default {
       search: ''
     }
   },
-  created () {
+  mounted () {
     this.getAllItems()
   },
   methods: {

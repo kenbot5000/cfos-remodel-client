@@ -26,12 +26,12 @@ import StockManager from '../components/StockManager'
 import MenuForm from '../components/MenuForm'
 
 export default {
-  layout: 'Base',
   components: {
     Snackbar,
     StockManager,
     MenuForm
   },
+  layout: 'Base',
   data () {
     return {
       menu: []
@@ -40,16 +40,14 @@ export default {
   created () {
     this.$store.commit('setNavbarText', 'Dashboard')
   },
-  async mounted () {
-    try {
-      const menu = await axios.get('/api/menu')
-      this.menu = menu.data.res
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err)
-    }
+  mounted () {
+    this.getAllMenuItems()
   },
   methods: {
+    async getAllMenuItems () {
+      const menu = await axios.get('/api/menu')
+      this.menu = menu.data.res
+    },
     async refresh (text) {
       const menu = await axios.get('/api/menu')
       this.menu = menu.data.res

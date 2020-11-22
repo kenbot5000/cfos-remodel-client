@@ -1,7 +1,7 @@
 <template>
   <v-snackbar v-model="snackbar" timeout="2000">
     {{ snackbarMessage }}
-    <template v-slot:action="{ attrs }">
+    <template #action="{ attrs }">
       <v-btn
         color="blue"
         text

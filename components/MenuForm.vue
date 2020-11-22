@@ -141,9 +141,8 @@ export default {
       }
     }
   },
-  async mounted () {
-    const res = await axios.get('/api/menu')
-    this.itemNames = res.data.res.map(item => item.name)
+  mounted () {
+    this.localRefresh()
   },
   methods: {
     async localRefresh () {

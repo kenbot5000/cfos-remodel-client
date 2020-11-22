@@ -90,7 +90,7 @@
                   </v-list-item-content>
                 </v-list-item>
                 <v-simple-table>
-                  <template v-slot:default>
+                  <template #default>
                     <thead>
                       <tr>
                         <th>Item Name</th>
@@ -124,7 +124,7 @@
         </v-row>
         <v-col>
           <v-simple-table>
-            <template v-slot:default>
+            <template #default>
               <thead>
                 <tr>
                   <th>Name</th>

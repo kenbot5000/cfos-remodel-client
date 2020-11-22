@@ -12,7 +12,7 @@
             </v-btn>
           </v-card-title>
           <v-simple-table class="mx-4">
-            <template v-slot:default>
+            <template #default>
               <thead>
                 <tr>
                   <th class="text-left">
@@ -52,7 +52,7 @@
           <v-divider />
           <!-- TODAY'S ORDERS -->
           <v-data-table :headers="menuHeaders" :items="activeMenu" :items-per-page="5" class="mx-4">
-            <template v-slot:[`item.stock`]="{item}">
+            <template #[`item.stock`]="{item}">
               <td v-if="item.stock === 0" class="error--text">
                 OUT OF STOCK
               </td>
@@ -64,7 +64,7 @@
         </v-card>
       </v-col>
       <v-col>
-        <UserCard :users="users" />
+        <BasicUserCard :users="users" />
       </v-col>
     </v-row>
     <v-dialog v-model="showOrderDialog" max-width="500">
@@ -93,7 +93,7 @@
           </v-list-item>
           <!-- ORDER DIALOG TABLE -->
           <v-simple-table class="my-2" height="200" fixed-header>
-            <template v-slot:default>
+            <template #default>
               <thead>
                 <tr>
                   <th>Item Name</th>
@@ -134,12 +134,12 @@
 
 <script>
 import axios from 'axios'
-import UserCard from '../components/UserCard'
+import BasicUserCard from '../components/BasicUserCard'
 import Snackbar from '../components/Snackbar'
 
 export default {
+  components: { BasicUserCard, Snackbar },
   layout: 'Base',
-  components: { UserCard, Snackbar },
   data () {
     return {
       users: [],
@@ -164,6 +164,11 @@ export default {
       // Order dialog
       showOrderDialog: false,
       currentlyViewingOrder: Object
+    }
+  },
+  head () {
+    return {
+      title: 'Dashboard'
     }
   },
   created () {
@@ -234,11 +239,6 @@ export default {
       this.refreshOrders(false)
       this.getAllActiveMenuItems()
       this.$refs.snackbar.sendMessage('New order arrived. Data refreshed')
-    }
-  },
-  head () {
-    return {
-      title: 'Dashboard'
     }
   }
 }

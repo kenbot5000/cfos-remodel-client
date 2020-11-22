@@ -24,7 +24,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <template v-slot:append>
+      <template #append>
         <div class="pa-2">
           <v-btn block color="error" @click="logout()">
             Log Out
