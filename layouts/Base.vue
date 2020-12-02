@@ -80,6 +80,12 @@ export default {
           message: 'Orders'
         },
         {
+          link: '/statistics',
+          icon: 'mdi-chart-box',
+          title: 'Statistics',
+          message: 'Statistics'
+        },
+        {
           link: '/kiosk',
           icon: 'mdi-basket',
           title: 'Go to Kiosk'
@@ -98,7 +104,6 @@ export default {
     }
 
     const cookie = this.$cookies.get('active-user')
-
     if (cookie === undefined) {
       this.$router.push('/login')
       return

@@ -1,0 +1,18 @@
+{
+  "data":[{
+    "day": "Monday",
+    "profits": 1250
+  },{
+    "day": "Tuesday",
+    "profits": 1337
+  },{
+    "day": "Monday",
+    "profits": 2102
+  },{
+    "day": "Monday",
+    "profits": 1732
+  },{
+    "day": "Monday",
+    "profits": 1589
+  }]
+}

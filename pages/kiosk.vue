@@ -178,7 +178,8 @@ export default {
       menu: [],
       snackbar: false,
       snackbarMessage: '',
-      finalDialog: false
+      finalDialog: false,
+      searchLoad: false
     }
   },
   computed: {
@@ -219,7 +220,8 @@ export default {
       }
     },
     async begin () {
-      const res = await axios.post('/api/order/', { student_no: Number(this.student_no) })
+      const user = await this.getCurrentSeller()
+      const res = await axios.post('/api/order/', { student_no: Number(this.student_no), seller: user.username })
       if (res.status === 201) {
         this.mainDialog = false
         this.order = res.data.res
@@ -243,6 +245,13 @@ export default {
     },
     showFinalDialog () {
       this.finalDialog = true
+    },
+    getCurrentSeller () {
+      const user = this.$cookies.get('active-user').id
+      const res = axios.get(`/api/user/search?id=${user}`).then((res) => {
+        return res.data.res
+      })
+      return res
     },
     async finalize () {
       const res = await axios.patch(`/api/order/${this.order._id}`, { active: true })

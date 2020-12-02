@@ -12,6 +12,14 @@
           <td>{{ userData.username }}</td>
         </tr>
         <tr>
+          <th>First Name</th>
+          <td>{{ userData.firstname }}</td>
+        </tr>
+        <tr>
+          <th>Last Name</th>
+          <td>{{ userData.lastname }}</td>
+        </tr>
+        <tr>
           <th>Password</th>
           <td>{{ obfuscatedPassword }}</td>
         </tr>
@@ -20,8 +28,8 @@
     <v-card-actions>
       <v-dialog v-model="editDialog" width="400">
         <template #activator="{ on, attrs }">
-          <v-btn color="secondary" v-bind="attrs" v-on="on">
-            Edit
+          <v-btn color="secondary" v-bind="attrs" :disabled="disableEdit" v-on="on">
+            {{ editButtonText }}
           </v-btn>
         </template>
         <v-card>
@@ -29,6 +37,8 @@
           <v-form class="mx-4">
             <v-text-field v-model="userData._id" label="ID" readonly />
             <v-text-field v-model="userForm.username" label="Username" />
+            <v-text-field v-model="userForm.firstname" label="First Name" />
+            <v-text-field v-model="userForm.lastname" label="Last Name" />
             <v-text-field
               v-model="userForm.password"
               label="Password"
@@ -68,12 +78,21 @@ export default {
       userData: this.user,
       userForm: { ...this.user },
       editDialog: false,
-      show: false
+      show: false,
+      disableEdit: false,
+      editButtonText: 'Edit'
     }
   },
   computed: {
     obfuscatedPassword () {
       return '*'.repeat(this.userData.password.length)
+    }
+  },
+  mounted () {
+    const cookie = this.$cookies.get('active-user')
+    if (this.userData._id === cookie.id) {
+      this.disableEdit = true
+      this.editButtonText = 'Currently logged in'
     }
   },
   methods: {
